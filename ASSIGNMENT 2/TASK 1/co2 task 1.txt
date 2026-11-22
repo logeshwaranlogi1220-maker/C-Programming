@@ -1,0 +1,20 @@
+#include <stdio.h>
+int main(void)
+{
+    struct { int price, qty, senior; } bill[3] = { {100,3,1}, {499,3,1}, {99,7,0} };
+    for (int i = 0; i < 3; i++) {
+        int price = bill[i].price, qty = bill[i].qty, senior = bill[i].senior;
+        /* ORIGINAL (buggy) */
+        int total = price * qty - price * qty * 15 / 100 * senior + price * qty * 5 / 100;
+        int net = total > 1000 ? total - 50 : total;
+        /* CORRECTED */
+        double gross    = (double)price * qty;
+        double discount = senior ? gross * 15.0 / 100.0 : 0.0;
+        double taxable  = gross - discount;
+        double gst      = taxable * 5.0 / 100.0;
+        double ftotal   = taxable + gst;
+        double fnet     = ftotal > 1000 ? ftotal - 50 : ftotal;
+        printf("%d x %d | bug %d %d | fix %.2f %.2f\n", price, qty, total, net, ftotal, fnet);
+    }
+    return 0;
+}
