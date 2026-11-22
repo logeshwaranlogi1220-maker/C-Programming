@@ -1,0 +1,10 @@
+00000101
+00000110
+AC is ON, PUMP is OFF
+Devices ON = 2
+--- Inquiry: precedence ---
+reg & 1 << dev   = 4  (shift first: reg & (1<<dev))
+(reg & 1) << dev = 0  (tests bit 0, then shifts)
+--- Inquiry: signed char with bit 7 set ---
+unsigned: u >> 7 = 1,  signed: s >> 7 = -1 (sign extended), s = -128, (s & 0x80) = 128
+signed char s promoted to int and printed with %x: ffffff80
