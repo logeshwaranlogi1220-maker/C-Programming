@@ -1,0 +1,8 @@
+n        result            i<n        for      while   do-while
+      97 prime              95          8          8          8
+     100 not prime           1          1          1          1
+    7919 prime            7917         87         87         87
+ 1000003 prime         1000001        999        999        999
+do-while with guard: is_prime(2)=1 is_prime(3)=1
+Sieve up to 1000003: 2122051 marking operations, 78499 primes, 1000003 is prime, memory = 1000004 bytes
+32-bit overflow: 65536*65536 = 0 (wraps to 0) so  i*i <= n stays true for every n
