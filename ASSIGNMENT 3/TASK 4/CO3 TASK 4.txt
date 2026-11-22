@@ -1,0 +1,107 @@
+#include <stdio.h>
+
+#define DISTRICTS 38
+#define MONTHS 12
+
+void read_rain(double rain[DISTRICTS][MONTHS])
+{
+    for (int d = 0; d < DISTRICTS; d++) {
+        for (int m = 0; m < MONTHS; m++) {
+            do {
+                printf("District %d month %d rainfall (mm): ",
+                       d + 1, m + 1);
+
+                if (scanf("%lf", &rain[d][m]) != 1)
+                    return;
+
+            } while (rain[d][m] < 0);
+        }
+    }
+}
+
+void district_totals(const double rain[DISTRICTS][MONTHS],
+                     double totals[DISTRICTS])
+{
+    for (int d = 0; d < DISTRICTS; d++) {
+        totals[d] = 0;
+
+        for (int m = 0; m < MONTHS; m++)
+            totals[d] += rain[d][m];
+    }
+}
+
+void monthly_averages(const double rain[DISTRICTS][MONTHS],
+                      double averages[MONTHS])
+{
+    for (int m = 0; m < MONTHS; m++) {
+        double sum = 0;
+
+        for (int d = 0; d < DISTRICTS; d++)
+            sum += rain[d][m];
+
+        averages[m] = sum / DISTRICTS;
+    }
+}
+
+void find_wettest(const double rain[DISTRICTS][MONTHS],
+                  int *best_d, int *best_m, double *maximum)
+{
+    *maximum = rain[0][0];
+    *best_d = 0;
+    *best_m = 0;
+
+    for (int d = 0; d < DISTRICTS; d++) {
+        for (int m = 0; m < MONTHS; m++) {
+            if (rain[d][m] > *maximum) {
+                *maximum = rain[d][m];
+                *best_d = d;
+                *best_m = m;
+            }
+        }
+    }
+}
+
+void print_deficient(const double totals[DISTRICTS],
+                     double state_average)
+{
+    for (int d = 0; d < DISTRICTS; d++) {
+        if (totals[d] < 0.60 * state_average) {
+            printf("District %d is below 60%% of state annual average\n",
+                   d + 1);
+        }
+    }
+}
+
+int main(void)
+{
+    static double rain[DISTRICTS][MONTHS];
+    double totals[DISTRICTS], averages[MONTHS];
+    int d, m;
+    double maximum, grand_total = 0;
+
+    read_rain(rain);
+
+    district_totals(rain, totals);
+    monthly_averages(rain, averages);
+    find_wettest(rain, &d, &m, &maximum);
+
+    for (int i = 0; i < DISTRICTS; i++)
+        grand_total += totals[i];
+
+    printf("\nAnnual district totals:\n");
+
+    for (int i = 0; i < DISTRICTS; i++)
+        printf("District %d: %.2f mm\n", i + 1, totals[i]);
+
+    printf("State monthly averages (mm):\n");
+
+    for (int i = 0; i < MONTHS; i++)
+        printf("Month %d: %.2f\n", i + 1, averages[i]);
+
+    printf("Wettest: district %d, month %d = %.2f mm\n",
+           d + 1, m + 1, maximum);
+
+    print_deficient(totals, grand_total / DISTRICTS);
+
+    return 0;
+}
