@@ -1,0 +1,128 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_NAMES 500
+#define NAME_LEN 30
+
+void remove_newline(char s[])
+{
+    s[strcspn(s, "\n")] = '\0';
+}
+
+void sort_names(char names[][NAME_LEN], int n)
+{
+    for (int i = 1; i < n; i++) {
+        char key[NAME_LEN];
+        strcpy(key, names[i]);
+
+        int j = i - 1;
+
+        while (j >= 0 && strcmp(names[j], key) > 0) {
+            strcpy(names[j + 1], names[j]);
+            j--;
+        }
+
+        strcpy(names[j + 1], key);
+    }
+}
+
+int binary_search(char names[][NAME_LEN],
+                  int n, const char key[])
+{
+    int low = 0, high = n - 1;
+
+    while (low <= high) {
+        int mid = low + (high - low) / 2;
+        int result = strcmp(names[mid], key);
+
+        if (result == 0)
+            return mid;
+
+        if (result < 0)
+            low = mid + 1;
+        else
+            high = mid - 1;
+    }
+
+    return -1;
+}
+
+int main(void)
+{
+    char names[MAX_NAMES][NAME_LEN];
+    char key[NAME_LEN];
+    int n;
+
+    printf("Number of names (1-%d): ", MAX_NAMES);
+
+    if (scanf("%d", &n) != 1 || n < 1 || n > MAX_NAMES) {
+        fprintf(stderr, "Invalid count.\n");
+        return 1;
+    }
+
+    int ch;
+
+    while ((ch = getchar()) != '\n' && ch != EOF) {
+    }
+
+    for (int i = 0; i < n; i++) {
+        printf("Name %d (maximum 29 characters): ", i + 1);
+
+        if (fgets(names[i], NAME_LEN, stdin) == NULL)
+            return 1;
+
+        if (strchr(names[i], '\n') == NULL) {
+            while ((ch = getchar()) != '\n' && ch != EOF) {
+            }
+
+            fprintf(stderr, "Name too long; maximum is 29 characters.\n");
+            return 1;
+        }
+
+        remove_newline(names[i]);
+    }
+
+    sort_names(names, n);
+
+    printf("\nSorted names:\n");
+
+    for (int i = 0; i < n; i++)
+        printf("%s\n", names[i]);
+
+    printf("Search name: ");
+
+    if (fgets(key, sizeof key, stdin) == NULL)
+        return 1;
+
+    if (strchr(key, '\n') == NULL) {
+        fprintf(stderr, "Search name too long.\n");
+        return 1;
+    }
+
+    remove_newline(key);
+
+    int pos = binary_search(names, n, key);
+
+    if (pos >= 0)
+        printf("%s found at sorted index %d\n", key, pos);
+    else
+        printf("%s not found\n", key);
+
+    printf("Duplicate names:\n");
+
+    int found = 0;
+
+    for (int i = 1; i < n; i++) {
+        if (strcmp(names[i - 1], names[i]) == 0) {
+            if (i == 1 || strcmp(names[i - 2], names[i]) != 0)
+                printf("%s\n", names[i]);
+
+            found = 1;
+        }
+    }
+
+    if (!found)
+        printf("None\n");
+
+    return 0;
+}
