@@ -1,0 +1,55 @@
+
+#include <stdio.h>
+
+typedef struct
+{
+    int id, age;
+    char name[30], group[4];
+} Donor;
+
+int eligible(const Donor *d)
+{
+    return d->age >= 18;
+}
+
+int count_eligible(const Donor d[], int n, int *youngest_id)
+{
+    int count = 0, min_age = 1000;
+    int i;
+
+    *youngest_id = -1;
+
+    for (i = 0; i < n; i++)
+    {
+        if (eligible(&d[i]))
+        {
+            count++;
+
+            if (d[i].age < min_age)
+            {
+                min_age = d[i].age;
+                *youngest_id = d[i].id;
+            }
+        }
+    }
+
+    return count;
+}
+
+int main(void)
+{
+    Donor d[] = {
+        {101,20,"Arun","O+"},
+        {102,17,"Bala","A+"},
+        {103,25,"Devi","B+"},
+        {104,19,"Ezhil","O-"}
+    };
+
+    int id;
+    int n = count_eligible(d, 4, &id);
+
+    printf("Eligible donors: %d\n", n);
+    printf("Youngest eligible donor ID: %d\n", id);
+
+    return 0;
+}
