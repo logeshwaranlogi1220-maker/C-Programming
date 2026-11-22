@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <math.h>
+#define LIMIT 360
+
+int run(double P, double r, double E, int show, double *tot_int)
+{
+    double bal = P, ti = 0; int m = 0;
+    if (E <= P * r) { if (show) printf("Repayment too small: loan never reduces!\n"); return -1; }
+    while (bal > 0.005) {                    /* not bal != 0 */
+        if (m >= LIMIT) { *tot_int = ti; return -2; }
+        double open = bal, in = open * r, due = open + in;
+        double pay = (E < due) ? E : due;    /* last month pays only what is left */
+        bal = due - pay; ti += in; m++;
+        if (show) printf("%5d %10.2f %10.2f %10.2f %10.2f\n", m, open, in, pay, bal);
+    }
+    *tot_int = ti; return m;
+}
+
+int main(void)
+{
+    double ti;
+    int m = run(10000, 0.02, 2000, 1, &ti);
+    printf("Months = %d, total interest = %.2f\n", m, ti);
+    printf("Formula: n = %.3f\n", -log(1 - 0.02 * 10000 / 2000.0) / log(1.02));
+    return 0;
+}

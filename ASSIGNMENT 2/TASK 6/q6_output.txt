@@ -1,0 +1,27 @@
+month    opening   interest    payment    closing
+    1   10000.00     200.00    2000.00    8200.00
+    2    8200.00     164.00    2000.00    6364.00
+    3    6364.00     127.28    2000.00    4491.28
+    4    4491.28      89.83    2000.00    2581.11
+    5    2581.11      51.62    2000.00     632.73
+    6     632.73      12.65     645.38       0.00
+Months = 6, total interest = 645.38
+Formula: n = 5.321 -> 6 months
+
+Growth investigation (P=10000, r=2%, interest in month 1 = 200)
+ repayment   months     interest    formula
+      2000        6       645.38        5.3
+      1000       12      1270.33       11.3
+       500       26      2898.73       25.8
+       300       56      6644.17       55.5
+       250       82     10318.98       81.3
+       220      122     16639.92      121.1
+       210      154     22286.50      153.7
+       205      188     28444.00      187.5
+       201      268     43829.75      267.8
+       200    never            -  undefined
+       150    never            -  undefined
+
+Deployment test:
+Repayment 150.00 <= first month interest 200.00: loan never reduces!
+repayment 200.1: stopped by 360-month safety limit; message: 'Repayment too small - loan will take over 30 years; please increase it.'
