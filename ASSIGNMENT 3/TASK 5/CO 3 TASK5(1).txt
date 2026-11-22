@@ -1,0 +1,29 @@
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
+int main(void)
+{
+    char message[100];
+    char copy[100];
+
+    printf("Enter a message: ");
+
+    if (fgets(message, sizeof message, stdin) == NULL)
+        return 1;
+
+    message[strcspn(message, "\n")] = '\0';
+
+    if (snprintf(copy, sizeof copy, "%s", message)
+        >= (int)sizeof copy) {
+        fprintf(stderr, "Input was too long and was truncated.\n");
+    }
+
+    for (size_t i = 0; copy[i] != '\0'; i++)
+        copy[i] = (char)toupper((unsigned char)copy[i]);
+
+    printf("Uppercase: %s\n", copy);
+    printf("Length: %zu\n", strlen(message));
+
+    return 0;
+}
