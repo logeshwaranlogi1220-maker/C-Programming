@@ -1,0 +1,42 @@
+
+#include <stdio.h>
+
+int *lowest_stock(int stock[], int n)
+{
+    if (n <= 0)
+        return NULL;
+
+    int *lowest = &stock[0];
+    int i;
+
+    for (i = 1; i < n; i++)
+    {
+        if (stock[i] < *lowest)
+            lowest = &stock[i];
+    }
+
+    return lowest;
+}
+
+int main(void)
+{
+    int stock[8] = {12, 40, 25, 8, 31, 18, 22, 14};
+
+    int *p = stock;
+
+    printf("p + 3 points to stock[3]\n");
+    printf("*(p + 3) = %d\n", *(p + 3));
+    printf("p[3] = %d\n", p[3]);
+
+    printf("*p++ = %d\n", *p++);
+
+    int *low = lowest_stock(stock, 8);
+
+    printf("Lowest stock before update: %d\n", *low);
+
+    *low += 5;
+
+    printf("Lowest stock after update: %d\n", *low);
+
+    return 0;
+}
