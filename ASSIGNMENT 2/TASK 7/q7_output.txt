@@ -1,0 +1,8 @@
+n         result       original   redesign    saving%
+97        prime               8          4      50.0%  agree
+100       not prime           1          1       0.0%  agree
+7919      prime              87         30      65.5%  agree
+1000003   prime             999        334      66.6%  agree
+999983    prime             998        334      66.5%  agree
+1000001   not prime         100         35      65.0%  agree
+All n=1..100000: total divisions original=2745694 redesign=1031095 (62.4% fewer), mismatches=0

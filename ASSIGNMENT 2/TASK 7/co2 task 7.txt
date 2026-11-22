@@ -1,0 +1,32 @@
+#include <stdio.h>
+unsigned long checks = 0;
+
+int is_prime_v1(unsigned long n)           /* original */
+{
+    checks = 0; if (n < 2) return 0;
+    for (unsigned long i = 2; i * i <= n; i++) { checks++; if (n % i == 0) return 0; }
+    return 1;
+}
+
+int is_prime_v2(unsigned long n)           /* redesigned: 2, 3, then 6k-1 and 6k+1 */
+{
+    checks = 0; if (n < 2) return 0;
+    checks++; if (n % 2 == 0) return n == 2;
+    checks++; if (n % 3 == 0) return n == 3;
+    for (unsigned long i = 5; i * i <= n; i += 6) {
+        checks++; if (n % i == 0) return 0;
+        checks++; if (n % (i + 2) == 0) return 0;
+    }
+    return 1;
+}
+
+int main(void)
+{
+    unsigned long t[] = {97, 100, 7919, 1000003};
+    for (int k = 0; k < 4; k++) {
+        int a = is_prime_v1(t[k]); unsigned long c1 = checks;
+        int b = is_prime_v2(t[k]); unsigned long c2 = checks;
+        printf("%lu: original=%lu redesign=%lu %s\n", t[k], c1, c2, a == b ? "agree" : "MISMATCH");
+    }
+    return 0;
+}
