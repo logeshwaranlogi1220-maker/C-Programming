@@ -1,0 +1,59 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct
+{
+    int id;
+    char name[40];
+    char group[4];
+} Donor;
+
+typedef struct
+{
+    Donor *data;
+    size_t size, capacity;
+} DonorList;
+
+int add_donor(DonorList *list, Donor d)
+{
+    if (list->size == list->capacity)
+    {
+        size_t newcap =
+            (list->capacity == 0) ? 2 : list->capacity * 2;
+
+        Donor *p = realloc(list->data,
+                           newcap * sizeof(Donor));
+
+        if (p == NULL)
+            return 0;
+
+        list->data = p;
+        list->capacity = newcap;
+    }
+
+    list->data[list->size++] = d;
+
+    return 1;
+}
+
+int main(void)
+{
+    DonorList list = {NULL, 0, 0};
+
+    Donor d = {5001, "Kumar", "O+"};
+
+    if (add_donor(&list, d))
+    {
+        printf("Added donor %d; size=%zu capacity=%zu\n",
+               d.id, list.size, list.capacity);
+    }
+    else
+    {
+        perror("realloc");
+    }
+
+    free(list.data);
+
+    return 0;
+}
