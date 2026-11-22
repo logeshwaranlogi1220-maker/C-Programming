@@ -1,0 +1,31 @@
+#include <stdio.h>
+
+int linear_search(const int a[], int n, int key, int *comparisons)
+{
+    *comparisons = 0;
+
+    for (int i = 0; i < n; i++) {
+        (*comparisons)++;
+
+        if (a[i] == key)
+            return i;
+    }
+
+    return -1;
+}
+
+int main(void)
+{
+    int a[] = {1533, 1048, 1305, 1190, 1021};
+    int keys[] = {1533, 1305, 1021, 1400};
+    int n = 5, c;
+
+    for (int i = 0; i < 4; i++) {
+        int pos = linear_search(a, n, keys[i], &c);
+
+        printf("Key %d -> index %d, comparisons = %d\n",
+               keys[i], pos, c);
+    }
+
+    return 0;
+}
