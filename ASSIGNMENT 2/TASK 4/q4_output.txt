@@ -1,0 +1,19 @@
+100:S 95:S 83:A 50:D 49:F -5:? 
+--- boundary test set ---
+marks  ladder  switch  table   no-break 
+-1     ?       ?       ?       ?        
+0      F       F       F       F        
+49     F       F       F       F        
+50     D       D       D       D        
+59     D       D       D       D        
+60     C       C       C       C        
+69     C       C       C       C        
+70     B       B       B       B        
+79     B       B       B       B        
+80     A       A       A       B        
+89     A       A       A       B        
+90     S       S       S       S        
+99     S       S       S       S        
+100    S       S       S       S        
+101    ?       ?       ?       ?        
+--- scholarship (grade A, income band 1) = 50%, (S, band 0) = 100%
