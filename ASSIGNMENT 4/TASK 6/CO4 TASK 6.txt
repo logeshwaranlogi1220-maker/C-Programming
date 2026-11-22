@@ -1,0 +1,168 @@
+#include <stdio.h>
+
+#define MAX 3
+
+struct Date {
+    int day, month, year;
+};
+
+struct Packaged {
+    struct Date expiry;
+};
+
+struct Cooked {
+    int hour, minute;
+};
+
+struct Combo {
+    int item1, item2, item3;
+};
+
+struct Item {
+    int id;
+    char name[30];
+    int stock;
+    float price;
+
+    int type;
+
+    union {
+        struct Packaged packaged;
+        struct Cooked cooked;
+        struct Combo combo;
+    } details;
+};
+
+struct Sale {
+    char name[30];
+    int quantity;
+    float revenue;
+};
+
+struct Item items[MAX] = {
+    {1, "Juice", 10, 20, 1, {.packaged = {{22, 11, 2026}}}},
+    {2, "Sandwich", 8, 40, 2, {.cooked = {10, 30}}},
+    {3, "Combo", 5, 60, 3, {.combo = {1, 2, 0}}}
+};
+
+struct Sale sales[20];
+int saleCount = 0;
+
+void displayItems(void)
+{
+    printf("\nCANTEEN ITEMS\n");
+
+    for (int i = 0; i < MAX; i++) {
+        printf("%d %s Stock:%d Price:%.2f\n",
+               items[i].id,
+               items[i].name,
+               items[i].stock,
+               items[i].price);
+    }
+}
+
+void recordSale(int id, int quantity)
+{
+    struct Item *p = NULL;
+
+    for (int i = 0; i < MAX; i++) {
+        if (items[i].id == id) {
+            p = &items[i];
+            break;
+        }
+    }
+
+    if (p == NULL) {
+        printf("Invalid item ID\n");
+        return;
+    }
+
+    if (quantity <= 0) {
+        printf("Invalid quantity\n");
+        return;
+    }
+
+    if (quantity > p->stock) {
+        printf("Insufficient stock for %s\n", p->name);
+        return;
+    }
+
+    p->stock -= quantity;
+
+    sales[saleCount].quantity = quantity;
+    sales[saleCount].revenue = quantity * p->price;
+
+    snprintf(sales[saleCount].name,
+             sizeof sales[saleCount].name,
+             "%s", p->name);
+
+    saleCount++;
+
+    printf("Sale successful: %s x %d\n",
+           p->name, quantity);
+}
+
+void expiryWarning(int day, int month, int year)
+{
+    printf("\nEXPIRY WARNINGS\n");
+
+    for (int i = 0; i < MAX; i++) {
+        if (items[i].type == 1) {
+            struct Date d = items[i].details.packaged.expiry;
+
+            if (d.year == year && d.month == month &&
+                d.day >= day && d.day <= day + 2) {
+                printf("%s expires on %02d/%02d/%d\n",
+                       items[i].name,
+                       d.day, d.month, d.year);
+            }
+        }
+    }
+}
+
+void sortSales(void)
+{
+    struct Sale temp;
+
+    for (int i = 0; i < saleCount - 1; i++) {
+        for (int j = i + 1; j < saleCount; j++) {
+            if (sales[j].revenue > sales[i].revenue) {
+                temp = sales[i];
+                sales[i] = sales[j];
+                sales[j] = temp;
+            }
+        }
+    }
+}
+
+void displaySummary(void)
+{
+    sortSales();
+
+    printf("\nDAILY BILL SUMMARY\n");
+
+    for (int i = 0; i < saleCount; i++) {
+        printf("%s Quantity:%d Revenue:%.2f\n",
+               sales[i].name,
+               sales[i].quantity,
+               sales[i].revenue);
+    }
+}
+
+int main(void)
+{
+    displayItems();
+
+    recordSale(1, 2);
+    recordSale(2, 3);
+    recordSale(3, 10);
+
+    expiryWarning(21, 11, 2026);
+
+    displaySummary();
+
+    printf("\nUPDATED STOCK\n");
+    displayItems();
+
+    return 0;
+}
