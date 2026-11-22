@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define N 1000
+static int senior[N], cls[N], card[N];
+static long calls;
+static int verify(int i) { calls++; return card[i]; }
+static int side(int *x) { *x = 1; return 1; }
+
+int main(void)
+{
+    srand(42);
+    for (int i = 0; i < N; i++) { senior[i] = rand()%100 < 20; cls[i] = rand()%100 < 50; card[i] = rand()%100 < 10; }
+    int granted;
+
+    calls = 0; granted = 0;   /* A: cheap condition first */
+    for (int i = 0; i < N; i++) if ((senior[i] && cls[i]) || verify(i)) granted++;
+    printf("A: calls=%ld granted=%d\n", calls, granted);
+
+    calls = 0; granted = 0;   /* B: slow call first */
+    for (int i = 0; i < N; i++) if (verify(i) || (senior[i] && cls[i])) granted++;
+    printf("B: calls=%ld granted=%d\n", calls, granted);
+
+    calls = 0; granted = 0;   /* C: nested if */
+    for (int i = 0; i < N; i++) {
+        int ok = 0;
+        if (senior[i]) { if (cls[i]) ok = 1; }
+        if (!ok) { if (verify(i)) ok = 1; }
+        granted += ok;
+    }
+    printf("C: calls=%ld granted=%d\n", calls, granted);
+
+    calls = 0; granted = 0;   /* D: non-short-circuit | */
+    for (int i = 0; i < N; i++) if ((senior[i] & cls[i]) | verify(i)) granted++;
+    printf("D: calls=%ld granted=%d\n", calls, granted);
+
+    int x = 0;
+    x = 0; (void)(0 && side(&x)); printf("&&: side called? %s\n", x ? "yes" : "no");
+    x = 0; (void)(1 || side(&x)); printf("||: side called? %s\n", x ? "yes" : "no");
+    x = 0; (void)(0 &  side(&x)); printf("& : side called? %s\n", x ? "yes" : "no");
+    printf("2 && 1 = %d, 2 & 1 = %d\n", 2 && 1, 2 & 1);
+    return 0;
+}

@@ -1,0 +1,10 @@
+Passengers: 1000  (seniors=190, eligible class=501, card holders=108)
+A: (senior&&class) || verify()             calls= 902 granted=195
+B: verify() || (senior&&class)             calls=1000 granted=195
+C: nested if (same order as A)             calls= 902 granted=195
+D: (senior&class) | verify()  [non-SC]     calls=1000 granted=195
+Audit-log entries in version B (verify first) = 1000, in version A = 902
+0 && side(): result=0, side called? no
+1 || side(): result=1, side called? no
+0 &  side(): result=0, side called? yes
+2 && 1 = 1   but   2 & 1 = 0  (& works on bits, not truth values)
